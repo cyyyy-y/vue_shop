@@ -1,3 +1,8 @@
+### 创建新的分支
+```
+git checkout -b login
+```
+
 ### 查看源代码状态
 ```
 git status
@@ -28,7 +33,6 @@ git branch
 ```
 git checkout main
 ```
-
 #### 2. 合并分支
 ```
 git merge login
@@ -39,7 +43,15 @@ git merge login
 git push
 ```
 
-
+### 本地login分支推送至云端login分支
+#### 1. 切换分支
+```
+git checkout login
+```
+#### 2. 推送分支
+```
+git push -u origin login
+```
 
 
 
