@@ -28,12 +28,12 @@
 <script>
 export default {
   name: 'Login',
-  data () {
+  data() {
     return {
       // 这是登录表单的数据绑定对象
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       // 这是表单的验证规则对象
       loginFormRules: {
@@ -52,14 +52,26 @@ export default {
   },
   methods: {
     // 点击重置按钮，重置登录表单
-    resetLoginForm () {
+    resetLoginForm() {
       // console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
 
-    login () {
-      this.$refs.loginFormRef.validate(valid => {
-        console.log(valid)
+    login() {
+      this.$refs.loginFormRef.validate(async valid => {
+        // console.log(valid)
+        // eslint-disable-next-line no-useless-return
+        if (!valid) return
+        const { data: res } = await this.$http.post('login', this.loginForm)
+        if (res.meta.status !== 200) return this.$message.error('登陆失败！')
+        this.$message.success('登陆成功！')
+        // 1.将登录成功之后的token，保存到客户端的sessionStorage中
+        //  1.1项目中除了登录之外的API接口，必须在登录之后才能访问
+        //  1.2token只应当在当前网站打开期间生效，所以将token保存在sessionStrong中
+        console.log(res)
+        window.sessionStorage.setItem('token', res.data.token)
+        // 2.通过编程式导航跳转到后台首页，路由地址是/home
+        this.$router.push('/home')
       })
     }
   }
@@ -68,7 +80,11 @@ export default {
 
 <style lang="less" scoped>
   .login_container {
-    background-color: rgb(183, 181, 210);
+    /*background-color: rgb(183, 181, 210);*/
+    background: -webkit-linear-gradient(left top, #3d3d3d, #fff); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(bottom right, #3d3d3d, #fff); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(bottom right, #3d3d3d, #fff); /* Firefox 3.6 - 15 */
+    background: linear-gradient(to bottom right, #3d3d3d, #fff); /* 标准的语法 */
     height: 100%;
   }
 
@@ -76,13 +92,14 @@ export default {
     width: 450px;
     height: 300px;
     background-color: #ffffff;
-    border-radius: 8px;
+    border-radius: 10px;
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: 0 0 6px 3px #ccc;
 
-    .avatar_box{
+    .avatar_box {
       height: 130px;
       width: 130px;
       border: 1px solid #eeeeee;
